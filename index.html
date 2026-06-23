@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Слайдер</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #faf5f7;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+  }
+  h1 { color: #333; margin-bottom: 60px; }
+
+  .slider {
+    position: relative;
+    width: 400px;
+    height: 8px;
+    background: #f3d4e0;
+    border-radius: 4px;
+  }
+
+  .fill {
+    position: absolute;
+    height: 100%;
+    background: #ff7fa8;
+    border-radius: 4px;
+    width: 50%;
+  }
+
+  .thumb {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    background: #ff5e92;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+  }
+
+  .value {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #a3e3a0;
+    color: #1f4d1c;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  .value::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #a3e3a0;
+  }
+</style>
+</head>
+<body>
+
+<h1>Слайдер</h1>
+
+<div class="slider" id="slider">
+  <div class="fill" id="fill"></div>
+  <div class="thumb" id="thumb">
+    <div class="value" id="value">50</div>
+  </div>
+</div>
+
+<script>
+const slider = document.getElementById("slider");
+const thumb = document.getElementById("thumb");
+const fill = document.getElementById("fill");
+const valueLabel = document.getElementById("value");
+
+const MIN = 0;
+const MAX = 100;
+let dragging = false;
+
+function setValueFromX(clientX) {
+  const rect = slider.getBoundingClientRect();
+  let pos = clientX - rect.left;
+  if (pos < 0) pos = 0;
+  if (pos > rect.width) pos = rect.width;
+
+  const percent = pos / rect.width;
+  const value = Math.round(MIN + percent * (MAX - MIN));
+
+  thumb.style.left = percent * 100 + "%";
+  fill.style.width = percent * 100 + "%";
+  valueLabel.textContent = value;
+}
+
+thumb.addEventListener("mousedown", function () {
+  dragging = true;
+});
+
+slider.addEventListener("mousedown", function (e) {
+  dragging = true;
+  setValueFromX(e.clientX);
+});
+
+document.addEventListener("mousemove", function (e) {
+  if (dragging) setValueFromX(e.clientX);
+});
+
+document.addEventListener("mouseup", function () {
+  dragging = false;
+});
+</script>
+
+</body>
+</html>
